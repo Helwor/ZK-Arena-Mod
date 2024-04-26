@@ -246,11 +246,12 @@ local function OnHQSpawn(HQID, HQTeamID, spawnUnitID)
 
     local unitCount = Spring.GetUnitRulesParam(HQID, "HQSpawnUnitCount" .. spawnUnitID)
     local cmdQueue = Spring.GetCommandQueue(HQID, -1)
-
     for i = 1, unitCount do
         local sX, sY, sZ = getHQSpawnPointFor(HQID, UnitDefs[udID])
         local cUnitID = GG.DropUnit(UnitDefs[udID].name, sX, sY, sZ, 0, HQTeamID, false, 60)
-
+        Spring.SetUnitCosts(cUnitID, {
+            metalCost = unitCost/unitCount, -- fixing the reclaim exploit (Helwor)
+        })
         if cmdQueue then
             for i = 1, #cmdQueue do
                 local cmd = cmdQueue[i]
